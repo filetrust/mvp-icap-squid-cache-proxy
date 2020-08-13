@@ -1,0 +1,97 @@
+---
+- name: Create Azure VM
+  hosts: localhost
+  connection: local
+  vars_files: config_vars.yaml
+  tasks:
+############################################
+  - name: Get my public IP
+    ipify_facts:
+  - name: Create VM
+    azure_rm_virtualmachine:
+      name: "{{ vm_name }}"
+      vm_size: Standard_D1_v2
+      admin_username: "{{ azure_vm_user }}"
+      ssh_password_enabled: false
+      ssh_public_keys: "{{ ssh_key }}"
+      managed_disk_type: StandardSSD_LRS
+      #os_disk_size_gb: 25
+      os_type: Linux
+      open_ports:
+      - 22
+      - "{{ squid_port }}"
+      - "{{ squid_transparent_http_port }}"
+      - "{{ squid_transparent_https_port }}"
+      resource_group: "{{ resource_group_name }}"
+      image:
+        offer: "UbuntuServer"
+        publisher: Canonical 
+        sku: '18.04-LTS'
+        version: latest
+  - name: Add a host
+    add_host:
+      hostname: azurevm
+      ansible_host: "{{ azure_vm['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}"
+  - pause:
+      seconds: 30
+#    register: ipify_public_ip
+############################################
+- name: Install and configure Squid 
+  hosts: azurevm
+  become: true
+  become_method: sudo
+  remote_user: "{{ azure_vm_user }}"
+  #connection: local
+  vars_files: config_vars.yaml
+  vars:
+    hostname: Squid-1
+    icap_url: icap://gw-icap01.westerneurope.azurecontainer.io/gw_rebuild
+    squid_port: 3128
+  tasks:
+  - name: Change hostname
+    hostname:
+      name: "{{ hostname }}"
+  - name: Transfer squid package
+    copy:
+      src: squid-deb-packages/squid.deb
+      dest: /tmp/squid.deb
+      mode: '0644' 
+  - name: Transfer squid-common package
+    copy:
+      src: squid-deb-packages/squid-common.deb
+      dest: /tmp/squid-common.deb
+      mode: '0644' 
+  - name: Install a squid-common.deb package
+    apt:
+      deb: /tmp/squid-common.deb
+  - name: Install a squid.deb package
+    apt:
+      deb: /tmp/squid.deb
+  - name: Transfer CA
+    copy:
+      src: squid.pem
+      dest: /etc/squid/squid.pem
+      mode: '0600'
+  - name: Template squid configuration to /etc/squid/squid.conf
+    template:
+      src: squid.conf.j2
+      dest: /etc/squid/squid.conf
+      owner: proxy
+      group: proxy
+      mode: '0600'
+      validate: squid -k parse -f %s
+  - name: Initialize SSL db
+    shell: /usr/lib/squid/security_file_certgen -c -s /var/lib/ssl_db -M 16MB
+  - name: Recursively change ownership of a ssl_db
+    file:
+      path: /var/lib/ssl_db
+      state: directory
+      recurse: yes
+      owner: proxy
+      group: proxy
+  - name: Restart squid
+    systemd:
+      name: squid
+      state: restarted
+  - debug:
+      msg: "VM IP address is {{ hostvars['localhost']['azure_vm']['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}, Your Public IP: {{ hostvars['localhost']['ipify_public_ip'] }}, is allowed to access the proxy"
