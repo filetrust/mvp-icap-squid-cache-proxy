@@ -1,4 +1,4 @@
-ALLOWEDIPS= # IP addresses to allow SSH (22/tcp) and Squid (3128/tcp) - Leave empty to use current public IP
-RESOURCEGROUP=gw-gks-icap-squid-proxy # Azure Resource Group
-VMNAME=Squid1 # Resource Name
+ALLOWEDIPS=                             # IP addresses to allow SSH (22/tcp) and Squid (3128/tcp) - Leave empty to use current public IP
+RESOURCEGROUP=gw-gks-icap-squid-proxy   # Azure Resource Group
+VMNAME=Squid-Main                       # Resource Name
 SSHPUBKEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWQ0tRH535reDGXnhzkMPK8duSdZTX0R11sIJ7osHrHzx7+em28+wW1gGtLeRESPsmG3xuG/LV5MBDRDWVtyRCnDuQX+6qmWnVZLtAl0PuxJ3IpC89TPDRqtJ+uGAm1JtHKOfT0WC9/z9+EhN9NQJtFeCtDKfDD5pf2ZlVRoDk1Le74EaoVlYbQASvOMzALFNvjtiKFh4ssKozN0bdgPMI7cnKYlF0aGWryGBlO9X0IEMQc2DHkfhkgjPtPWJ2V6NbwyFYw7nVAW26eghuxhP5hcQSkZW8ESl+J+jZlWdQnHqfnIBb53i02yLEEHAGF1sbk5IbLT9mlSSWKfJ49y75C+JcaCN/ns6udZRr2wYkP0XJtCTsf7yyaaBdOh4LWIXMMNIIy10sSyILWhJLIe8zQFE4LDBviO/kz6MAXUDh2spMGKI7b5I4SU7zQNghX6v4lf5NCNPqcuxSu335TKaVpm5ToPq1DpCvHsCosTOtwbxOffD6cEmA5Zd9ogkg/d0=" # SSH Public key to access them VM
