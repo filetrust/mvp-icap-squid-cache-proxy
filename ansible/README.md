@@ -13,7 +13,9 @@
 
 2. Install curl using your distibution package manager
 
-3. ```bash
+3.
+
+```bash
 curl -L https://aka.ms/InstallAzureCli | bash # Install az
 pip3 install --user ansible[azure]
 ```
