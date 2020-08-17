@@ -19,7 +19,9 @@ pip3 install --user ansible[azure]
 ```
 
 4. Create certificate authority at squid.pem (or copy your CA to squid.pem)
+
 ```
+
 openssl req -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -extensions v3_ca -keyout squid.pem -out squid.pem
 # Generating a RSA private key
 # ..................................................................+++++
@@ -43,6 +45,7 @@ openssl req -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -extensions v3_
 ```
 
 5. Login to azure with az command 
+
 ```bash
 az login
 ```
@@ -53,8 +56,10 @@ az login
 2. Optionally, tweak squid.conf.j2 template file (i.e to tweak target squid.conf)
 
 3. execute the following command:
+
 ```bash
 ansible-playbook -i <path to your ssh private key> azure-squid.yaml
 ```
+
 If everything works fine you should see a similar message to 
 > VM IP address is 1.2.3.4, Your Public IP: 5.6.7.8, is allowed to access the proxy
