@@ -7,7 +7,20 @@
 ############################################
   - name: Get my public IP
     ipify_facts:
-  - name: Create VM
+  - name: Create a virtual network
+    azure_rm_virtualnetwork:
+      name: "{{ vm_name }}-Net"
+      resource_group: "{{ resource_group_name }}"
+      address_prefixes_cidr:
+        - "10.1.0.0/16"
+      purge_dns_servers: yes
+  - name: Create a subnet
+    azure_rm_subnet:
+      resource_group: "{{ resource_group_name }}"
+      virtual_network_name: "{{ vm_name }}-Net"
+      name: "{{ vm_name }}-Subnet"
+      address_prefix_cidr: "10.1.0.0/16"
+  - name: Create a virtual machine
     azure_rm_virtualmachine:
       name: "{{ vm_name }}"
       vm_size: Standard_D1_v2
@@ -15,7 +28,7 @@
       ssh_password_enabled: false
       ssh_public_keys: "{{ ssh_key }}"
       managed_disk_type: StandardSSD_LRS
-      #os_disk_size_gb: 25
+      virtual_network_name: "{{ vm_name }}-Net"
       os_type: Linux
       open_ports:
       - 22
@@ -33,7 +46,7 @@
       hostname: azurevm
       ansible_host: "{{ azure_vm['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}"
   - pause:
-      seconds: 30
+      seconds: 15
 #    register: ipify_public_ip
 ############################################
 - name: Install and configure Squid 
