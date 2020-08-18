@@ -1,7 +1,7 @@
 ## Squid deployment and configuration ansible playbook on MS Azure VM
 
 ### Requirements
-- Linux environment or similar (i.e WSL2)
+- Linux environment (tested with Ubuntu 18.04 LTS)
 - curl
 - Python 3.6 or 3.7 (virtualenv is fine)
 - ansible and ansible azure modules
