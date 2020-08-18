@@ -17,6 +17,7 @@
 
 ```bash
 curl -L https://aka.ms/InstallAzureCli | bash # Install az
+grep -e "$HOME/.local/bin" -e '$HOME/.local/bin' <(echo $PATH) || eval $(echo 'export PATH=$PATH:$HOME/.local/bin' | tee -a ~/.bashrc)
 pip3 install --user ansible[azure]
 ```
 
@@ -60,7 +61,7 @@ az login
 3. execute the following command:
 
 ```bash
-ansible-playbook -i <path to your ssh private key> azure-squid.yaml
+ansible-playbook --private-key <path to your ssh private key> azure-squid.yaml
 ```
 
 If everything works fine you should see a similar message to 
