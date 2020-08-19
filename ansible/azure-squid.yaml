@@ -23,7 +23,7 @@
   - name: Create a virtual machine
     azure_rm_virtualmachine:
       name: "{{ vm_name }}"
-      vm_size: Standard_D1_v2
+      vm_size: "{{ vm_size }}"
       admin_username: "{{ azure_vm_user }}"
       ssh_password_enabled: false
       ssh_public_keys: "{{ ssh_key }}"
