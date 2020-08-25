@@ -1,0 +1,8 @@
+- name: Removing resources
+  hosts: localhost
+  vars_files: config_vars.yaml
+  connection: local
+  tasks:
+  - import_tasks: tasks/remove.yaml
+
+

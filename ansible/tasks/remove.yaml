@@ -1,0 +1,19 @@
+- name: Remove the virtual machine
+  azure_rm_virtualmachine:
+    name: "{{ vm_name }}"
+    resource_group: "{{ resource_group_name }}"
+    remove_on_absent: all
+    state: absent
+
+- name: Remove a subnet
+  azure_rm_subnet:
+    resource_group: "{{ resource_group_name }}"
+    virtual_network_name: "{{ vm_name }}-Net"
+    name: "{{ vm_name }}-Subnet"
+    state: absent
+
+- name: Remove the virtual network
+  azure_rm_virtualnetwork:
+    resource_group: "{{ resource_group_name }}"
+    name: "{{ vm_name }}-Net"
+    state: absent

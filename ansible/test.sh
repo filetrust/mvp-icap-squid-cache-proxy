@@ -1,2 +1,6 @@
 #!/bin/bash
-echo Success # Just a test
+cd $(dirname $0)
+pip3 install --user ansible[azure]
+grep -e "$HOME/.local/bin" -e '$HOME/.local/bin' <(echo $PATH) || eval $(echo 'export PATH=$PATH:$HOME/.local/bin' | tee -a ~/.bashrc)
+echo -e "$HOME/.ssh/squidkey\n\n" | ssh-keygen
+ansible-playbook -i "$HOME/.ssh/squidkey" azure-squid.yaml -e testing=True
