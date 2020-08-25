@@ -49,8 +49,9 @@
       hostname: azurevm
       ansible_host: "{{ azure_vm['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}"
       ansible_python_interpreter: /usr/bin/python3
-  - pause:
-      seconds: 15
+  - name: Sleeping 30 secs
+    pause:
+      seconds: 30
 
 ############################################
 - name: Install and configure Squid 
