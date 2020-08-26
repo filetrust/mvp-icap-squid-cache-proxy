@@ -121,12 +121,13 @@
   connection: local
   vars_files: config_vars.yaml
   tasks: 
+
   - name: Testing proxy connectivity
     uri:
       url: https://ipinfo.io/ip
       validate_certs: no
       method: GET
-    return_content: yes
+      return_content: yes
     register: response
     environment:
       https_proxy: "http://{{ hostvars['localhost']['azure_vm']['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}:{{ squid_port }}"
