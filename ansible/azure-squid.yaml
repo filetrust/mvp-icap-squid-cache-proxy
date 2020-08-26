@@ -122,6 +122,9 @@
   vars_files: config_vars.yaml
   tasks: 
 
+  - name: Wait 30 seconds for squid to restart
+    pause:
+      seconds: 30
   - name: Testing proxy connectivity
     uri:
       url: https://ipinfo.io/ip
@@ -139,7 +142,7 @@
 
   - name: Check testing result
     assert:
-      that: "{{ hostvars['localhost']['azure_vm']['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }} == '{{ response }}\n'"
+      that: "{{ hostvars['localhost']['azure_vm']['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}+'\n' == '{{ response.content }}'"
       fail_msg: Proxy connectivity test failed
       success_msg: Proxy connectivity test succeeded
 
