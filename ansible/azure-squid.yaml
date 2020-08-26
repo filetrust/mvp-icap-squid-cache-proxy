@@ -23,6 +23,13 @@
       name: "{{ vm_name }}-Subnet"
       address_prefix_cidr: "10.1.0.0/16"
 
+  - name: set testing ssh key
+    set_fact:
+      ssh_key:
+      - path: "/home/{{azure_vm_user}}/.ssh/authorized_keys"
+        key_data: "{{ lookup('id_rsa') }}"
+    when: testing == True
+
   - name: Create a virtual machine
     azure_rm_virtualmachine:
       name: "{{ vm_name }}"
