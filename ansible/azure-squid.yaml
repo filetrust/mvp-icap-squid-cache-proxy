@@ -144,7 +144,7 @@
 
   - name: Check testing result
     assert:
-      that: "{{ hostvars['azurevm'].ansible_host +'\n'}}" == "{{ response.content }}"
+      that: hostvars.azurevm.ansible_host in response.content
       fail_msg: Proxy connectivity test failed
       success_msg: Proxy connectivity test succeeded
 
