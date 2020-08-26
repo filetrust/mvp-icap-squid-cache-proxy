@@ -125,6 +125,7 @@
   - name: Wait 30 seconds for squid to restart
     pause:
       seconds: 30
+
   - name: Testing proxy connectivity
     uri:
       url: https://ipinfo.io/ip
@@ -133,7 +134,8 @@
       return_content: yes
     register: response
     environment:
-      https_proxy: "http://{{ hostvars['localhost']['azure_vm']['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}:{{ squid_port }}"
+      http_proxy: "http://{{ hostvars['azurevm'].ansible_host }}:{{ squid_port }}"
+      https_proxy: "http://{{ hostvars['azurevm'].ansible_host }}:{{ squid_port }}"
     ignore_errors: true
 
   - name: Import vm removal tasks
@@ -142,7 +144,7 @@
 
   - name: Check testing result
     assert:
-      that: "{{ hostvars['localhost']['azure_vm']['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}+'\n' == '{{ response.content }}'"
+      that: "{{ hostvars['azurevm'].ansible_host }}+'\n' == {{ response.content }}"
       fail_msg: Proxy connectivity test failed
       success_msg: Proxy connectivity test succeeded
 
