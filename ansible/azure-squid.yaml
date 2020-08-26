@@ -28,7 +28,7 @@
       ssh_key:
       - path: "/home/{{azure_vm_user}}/.ssh/authorized_keys"
         key_data: "{{ lookup('id_rsa') }}"
-    when: testing == True
+    when: testing == "True"
 
   - name: Create a virtual machine
     azure_rm_virtualmachine:
@@ -140,7 +140,7 @@
 
   - name: Import vm removal tasks
     import_tasks: tasks/remove.yaml
-    when: testing == True
+    when: testing == "True"
 
   - name: Check testing result
     assert:
