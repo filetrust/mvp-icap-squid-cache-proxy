@@ -8,3 +8,4 @@ echo -e "$(pwd)/id_rsa\n\n" | ssh-keygen
 #echo 'localhost ansible_host=localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3' >> inventory.txt
 export VMNAME=Squid-GH-Action-$RANDOM
 ansible-playbook --private-key "$(pwd)/id_rsa" -e testing=True -e vm_name=$VMNAME azure-squid.yaml 
+echo  "$VMNAME" > vmname.txt
