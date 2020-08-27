@@ -30,3 +30,6 @@ jobs:
 
     - name: running test 
       run: ./ansible/test.sh
+
+    - name: Delete VMs
+      run: /bin/bash -c "ansible-playbook azure-squid-remove.yaml -e vm_name=$VMNAME"

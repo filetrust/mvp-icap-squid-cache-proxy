@@ -1,4 +1,4 @@
-- name: Removing resources
+- name: Removing resources for {{ vm_name }}
   hosts: localhost
   vars_files: config_vars.yaml
   connection: local

@@ -138,9 +138,9 @@
       https_proxy: "http://{{ hostvars['azurevm'].ansible_host }}:{{ squid_port }}"
     ignore_errors: true
 
-  - name: Import vm removal tasks
-    import_tasks: tasks/remove.yaml
-    when: testing == "True"
+#  - name: Import vm removal tasks
+#    import_tasks: tasks/remove.yaml
+#    when: testing == "True"
 
   - name: Check testing result
     assert:
