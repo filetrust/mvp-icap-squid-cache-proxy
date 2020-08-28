@@ -141,7 +141,7 @@ git clone https://github.com/filetrust/mvp-icap-squid-cache-proxy && cd mvp-icap
 # |+=*.B==+         |
 # +----[SHA256]-----+
 ```
-**Note:** You can use existsing SSH keys instead of creating new keys.
+**Note:** You can use existing SSH keys instead of creating new keys.
 
 3. Tweak configuration in ```config_vars.yaml``` to meet preferences:  
  You should:
