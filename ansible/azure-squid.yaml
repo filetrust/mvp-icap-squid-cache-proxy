@@ -4,7 +4,7 @@
   connection: local
   vars_files: config_vars.yaml
   tasks:
-############################################
+
   - name: Get my public IP
     ipify_facts:
 
@@ -70,30 +70,37 @@
   remote_user: "{{ azure_vm_user }}"
   vars_files: config_vars.yaml
   tasks:
+
   - name: Change hostname
     hostname:
       name: "{{ hostname }}"
+
   - name: Transfer squid package
     copy:
       src: squid-deb-packages/squid.deb
       dest: /tmp/squid.deb
       mode: '0644' 
+
   - name: Transfer squid-common package
     copy:
       src: squid-deb-packages/squid-common.deb
       dest: /tmp/squid-common.deb
       mode: '0644' 
+
   - name: Install a squid-common.deb package
     apt:
       deb: /tmp/squid-common.deb
+
   - name: Install a squid.deb package
     apt:
       deb: /tmp/squid.deb
+
   - name: Transfer CA
     copy:
       src: squid.pem
       dest: /etc/squid/squid.pem
       mode: '0600'
+
   - name: Template squid configuration to /etc/squid/squid.conf
     template:
       src: squid.conf.j2
@@ -102,8 +109,10 @@
       group: proxy
       mode: '0600'
       validate: squid -k parse -f %s
+
   - name: Initialize SSL db
     shell: /usr/lib/squid/security_file_certgen -c -s /var/lib/ssl_db -M 16MB
+
   - name: Recursively change ownership of a ssl_db
     file:
       path: /var/lib/ssl_db
@@ -111,12 +120,15 @@
       recurse: yes
       owner: proxy
       group: proxy
+
   - name: Restart squid
     systemd:
       name: squid
       state: restarted
+
   - debug:
       msg: "VM IP address is {{ hostvars['localhost']['azure_vm']['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}, Your Public IP: {{ hostvars['localhost']['ipify_public_ip'] }}, is allowed to access the proxy"
+
 
 - name: Testing 
   hosts: localhost
@@ -139,10 +151,6 @@
       http_proxy: "http://{{ hostvars['azurevm'].ansible_host }}:{{ squid_port }}"
       https_proxy: "http://{{ hostvars['azurevm'].ansible_host }}:{{ squid_port }}"
     ignore_errors: true
-
-#  - name: Import vm removal tasks
-#    import_tasks: tasks/remove.yaml
-#    when: testing == "True"
 
   - name: Check testing result
     assert:
