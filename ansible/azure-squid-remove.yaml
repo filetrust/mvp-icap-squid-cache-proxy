@@ -1,8 +1,6 @@
 - name: Removing resources for {{ vm_name }}
   hosts: localhost
   vars_files: config_vars.yaml
-  vars:
-    vm_name: "{{ lookup('file','vmname.txt') }}"
   connection: local
   tasks:
   - include_tasks: tasks/remove.yaml
