@@ -39,6 +39,7 @@
       ssh_public_keys: "{{ ssh_key }}"
       managed_disk_type: StandardSSD_LRS
       virtual_network_name: "{{ vm_name }}-Net"
+      location: "{{ vm_location }}"
       os_type: Linux
       open_ports:
       - 22
