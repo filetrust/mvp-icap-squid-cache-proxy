@@ -1,0 +1,43 @@
+name: Ansible Playbook Test
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+    - 'docs/**'
+    - '**/README.md'
+
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+    - 'docs/**'
+    - '**/README.md'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.6, 3.7]
+
+    steps:
+    - name: Login via Az module
+      uses: azure/login@v1.1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true 
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: running test 
+      run: ./ansible/test.sh
+
+    - name: Delete VMs
+      run: /bin/bash -c "ansible-playbook ansible/azure-squid-remove.yaml -e vm_name=$(cat ansible/vmname.txt)"
+      if: always()

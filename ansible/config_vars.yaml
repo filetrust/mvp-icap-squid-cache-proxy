@@ -4,8 +4,10 @@ resource_group_name: gw-gks-icap-squid-proxy
 vm_name: Squid-VM0
 vm_size: Standard_D1_v2
 #You can find supported VM sizes by executing:
-# az vm list-sizes -l westeurope | grep "name" | awk '{print $2}' | cut -d'"' -f 2
-location: westeurope
+# az vm list-sizes -l uksouth | grep "name" | awk '{print $2}' | cut -d'"' -f 2
+vm_location: uksouth
+#You can find supported VM locations by executing:
+# az account list-locations -o table
 ssh_key:
   - path: "/home/{{azure_vm_user}}/.ssh/authorized_keys"
     key_data: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWQ0tRH535reDGXnhzkMPK8duSdZTX0R11sIJ7osHrHzx7+em28+wW1gGtLeRESPsmG3xuG/LV5MBDRDWVtyRCnDuQX+6qmWnVZLtAl0PuxJ3IpC89TPDRqtJ+uGAm1JtHKOfT0WC9/z9+EhN9NQJtFeCtDKfDD5pf2ZlVRoDk1Le74EaoVlYbQASvOMzALFNvjtiKFh4ssKozN0bdgPMI7cnKYlF0aGWryGBlO9X0IEMQc2DHkfhkgjPtPWJ2V6NbwyFYw7nVAW26eghuxhP5hcQSkZW8ESl+J+jZlWdQnHqfnIBb53i02yLEEHAGF1sbk5IbLT9mlSSWKfJ49y75C+JcaCN/ns6udZRr2wYkP0XJtCTsf7yyaaBdOh4LWIXMMNIIy10sSyILWhJLIe8zQFE4LDBviO/kz6MAXUDh2spMGKI7b5I4SU7zQNghX6v4lf5NCNPqcuxSu335TKaVpm5ToPq1DpCvHsCosTOtwbxOffD6cEmA5Zd9ogkg/d0="

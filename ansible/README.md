@@ -112,13 +112,55 @@ az login
 ```
 
 ### Usage
-1. Tweak configuration in config_vars.yaml to meet preferences, replace the example ssh public key with your ssh public key.
+1. Clone the repository and enter the ansible subfolder by executing
+```
+git clone https://github.com/filetrust/mvp-icap-squid-cache-proxy && cd mvp-icap-squid-cache-proxy/ansible
+```
+2. Create SSH key pair using `ssh-keygen` command
+   
+```bash
+ ssh-keygen 
+# Generating public/private rsa key pair.
+# Enter file in which to save the key (/home/user/.ssh/id_rsa): /home/user/.ssh/azure_squid_rsa
+# Enter passphrase (empty for no passphrase): 
+# Enter same passphrase again: 
+# Your identification has been saved in /home/user/.ssh/azure_squid_rsa
+# Your public key has been saved in /home/user/.ssh/azure_squid_rsa.pub
+# The key fingerprint is:
+# SHA256:wNN6eF6oic6Pj4yNWmybGjFv+nZnuxMMgxMLR5CKaFw user@computer
+# The key's randomart image is:
+# +---[RSA 3072]----+
+# |.+.              |
+# |o oE . .         |
+# |=o.+  + .        |
+# |+o+ o  = .       |
+# |+  . +o S .      |
+# | =   .o* .       |
+# |. * . o..        |
+# | *.X.o+          |
+# |+=*.B==+         |
+# +----[SHA256]-----+
+```
+**Note:** You can use existing SSH keys instead of creating new keys.
 
-   If you do not already have SSH key pairs, you can use `ssh-keygen` command
+3. Tweak configuration in ```config_vars.yaml``` to meet preferences:  
+ You should:
+ 
+ a. specify the target azure resource group using the `resource_group_name` parameter, you can find your resource groups [here](https://portal.azure.com/#blade/HubsExtension/BrowseResourceGroups).  
+ b. replace the example ssh public key (i.e `key_data` under `ssh`) with the content of the ssh public key file (for example `/home/user/.ssh/azure_squid_rsa.pub`) .  
+ c. specify the ICAP url using `icap_url` parameter, for instance, you must use and IP address instead of a domain name in your url  
+ d. specify a list of domains that should be protected by default using `protected_domains` parameter.  
+ 
+ optionally, you can
+ 
+ e. specify VM name using vm_name parameter (it's used as a prefix for VM dependencies as for disks, network interfaces, etc..)  
+ f. specify VM hostname using hostname parameter (vm_name value is the default).  
+ g. specify VM location using vm_location parameter, you can get a list of available locations with: `az account list-locations -o table`.  
+ h. specify VM sizes  using vm_size parameter, you can get a list of available sizes with `az vm list-sizes -l uksouth | grep "name" | awk '{print $2}' | cut -d'"' -f 2`.
 
-2. Optionally, tweak squid.conf.j2 template file (i.e to tweak target squid.conf)
+4. Optionally, tweak squid.conf.j2 template file (i.e to tweak target squid.conf)
 
-3. execute the following command and replace `<ssh private key path>` with the path to your ssh private key
+5. execute the following command and replace `<ssh private key path>` with the path to your ssh private key
 
 ```bash
 ansible-playbook --private-key <ssh private key path> azure-squid.yaml
@@ -128,5 +170,4 @@ If everything works fine you should see a similar message to
 > VM IP address is 1.2.3.4, Your Public IP: 5.6.7.8, is allowed to access the proxy
 
 You can now use the VM public IP address as a proxy with port 3128 (explicit proxy), your public IP should be allowed in squid.conf
-
-For security reasons, you will have to explicitly allow IP addresses in squid.conf, so the proxy can't be used by any unauthorized clients 
+For security reasons, you will have to explicitly allow IP addresses in squid.conf, so the proxy can't be used by any unauthorized clients

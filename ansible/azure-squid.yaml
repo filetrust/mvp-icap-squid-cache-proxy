@@ -4,9 +4,10 @@
   connection: local
   vars_files: config_vars.yaml
   tasks:
-############################################
+
   - name: Get my public IP
     ipify_facts:
+
   - name: Create a virtual network
     azure_rm_virtualnetwork:
       name: "{{ vm_name }}-Net"
@@ -14,12 +15,22 @@
       address_prefixes_cidr:
         - "10.1.0.0/16"
       purge_dns_servers: yes
+      location: "{{ vm_location }}"
+
   - name: Create a subnet
     azure_rm_subnet:
       resource_group: "{{ resource_group_name }}"
       virtual_network_name: "{{ vm_name }}-Net"
       name: "{{ vm_name }}-Subnet"
       address_prefix_cidr: "10.1.0.0/16"
+
+  - name: set testing ssh key
+    set_fact:
+      ssh_key:
+      - path: "/home/{{azure_vm_user}}/.ssh/authorized_keys"
+        key_data: "{{ lookup('file','id_rsa.pub') }}"
+    when: testing == "True"
+
   - name: Create a virtual machine
     azure_rm_virtualmachine:
       name: "{{ vm_name }}"
@@ -29,6 +40,7 @@
       ssh_public_keys: "{{ ssh_key }}"
       managed_disk_type: StandardSSD_LRS
       virtual_network_name: "{{ vm_name }}-Net"
+      location: "{{ vm_location }}"
       os_type: Linux
       open_ports:
       - 22
@@ -45,46 +57,50 @@
     add_host:
       hostname: azurevm
       ansible_host: "{{ azure_vm['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}"
-  - pause:
-      seconds: 15
-#    register: ipify_public_ip
+      ansible_python_interpreter: /usr/bin/python3
+  - name: Sleeping 30 secs
+    pause:
+      seconds: 30
+
 ############################################
 - name: Install and configure Squid 
   hosts: azurevm
   become: true
   become_method: sudo
   remote_user: "{{ azure_vm_user }}"
-  #connection: local
   vars_files: config_vars.yaml
-  vars:
-    hostname: Squid-1
-    icap_url: icap://gw-icap01.westerneurope.azurecontainer.io/gw_rebuild
-    squid_port: 3128
   tasks:
+
   - name: Change hostname
     hostname:
       name: "{{ hostname }}"
+
   - name: Transfer squid package
     copy:
       src: squid-deb-packages/squid.deb
       dest: /tmp/squid.deb
       mode: '0644' 
+
   - name: Transfer squid-common package
     copy:
       src: squid-deb-packages/squid-common.deb
       dest: /tmp/squid-common.deb
       mode: '0644' 
+
   - name: Install a squid-common.deb package
     apt:
       deb: /tmp/squid-common.deb
+
   - name: Install a squid.deb package
     apt:
       deb: /tmp/squid.deb
+
   - name: Transfer CA
     copy:
       src: squid.pem
       dest: /etc/squid/squid.pem
       mode: '0600'
+
   - name: Template squid configuration to /etc/squid/squid.conf
     template:
       src: squid.conf.j2
@@ -93,8 +109,10 @@
       group: proxy
       mode: '0600'
       validate: squid -k parse -f %s
+
   - name: Initialize SSL db
     shell: /usr/lib/squid/security_file_certgen -c -s /var/lib/ssl_db -M 16MB
+
   - name: Recursively change ownership of a ssl_db
     file:
       path: /var/lib/ssl_db
@@ -102,9 +120,40 @@
       recurse: yes
       owner: proxy
       group: proxy
+
   - name: Restart squid
     systemd:
       name: squid
       state: restarted
+
   - debug:
       msg: "VM IP address is {{ hostvars['localhost']['azure_vm']['properties']['networkProfile']['networkInterfaces'][0]['properties']['ipConfigurations'][0]['properties']['publicIPAddress']['properties']['ipAddress'] }}, Your Public IP: {{ hostvars['localhost']['ipify_public_ip'] }}, is allowed to access the proxy"
+
+
+- name: Testing 
+  hosts: localhost
+  connection: local
+  vars_files: config_vars.yaml
+  tasks: 
+
+  - name: Wait 30 seconds for squid to restart
+    pause:
+      seconds: 30
+
+  - name: Testing proxy connectivity
+    uri:
+      url: https://ipinfo.io/ip
+      validate_certs: no
+      method: GET
+      return_content: yes
+    register: response
+    environment:
+      http_proxy: "http://{{ hostvars['azurevm'].ansible_host }}:{{ squid_port }}"
+      https_proxy: "http://{{ hostvars['azurevm'].ansible_host }}:{{ squid_port }}"
+    ignore_errors: true
+
+  - name: Check testing result
+    assert:
+      that: hostvars.azurevm.ansible_host in response.content
+      fail_msg: Proxy connectivity test failed
+      success_msg: Proxy connectivity test succeeded
