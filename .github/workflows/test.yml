@@ -2,7 +2,8 @@ name: Ansible Playbook Test
 
 on:
   push:
-    branches: [ develop , master ]
+    branches: [ master ]
+
   pull_request:
     branches: [ master ]
 
