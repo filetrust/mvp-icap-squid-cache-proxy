@@ -15,6 +15,7 @@
       address_prefixes_cidr:
         - "10.1.0.0/16"
       purge_dns_servers: yes
+      location: "{{ vm_location }}"
 
   - name: Create a subnet
     azure_rm_subnet:
