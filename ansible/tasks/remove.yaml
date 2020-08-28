@@ -4,6 +4,7 @@
     resource_group: "{{ resource_group_name }}"
     remove_on_absent: all
     state: absent
+  ignore_erros: true
 
 - name: Remove a subnet
   azure_rm_subnet:
@@ -11,9 +12,11 @@
     virtual_network_name: "{{ vm_name }}-Net"
     name: "{{ vm_name }}-Subnet"
     state: absent
+  ignore_erros: true
 
 - name: Remove the virtual network
   azure_rm_virtualnetwork:
     resource_group: "{{ resource_group_name }}"
     name: "{{ vm_name }}-Net"
     state: absent
+  ignore_erros: true

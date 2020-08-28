@@ -33,3 +33,4 @@ jobs:
 
     - name: Delete VMs
       run: /bin/bash -c "ansible-playbook ansible/azure-squid-remove.yaml -e vm_name=$(cat ansible/vmname.txt)"
+      if: always()
