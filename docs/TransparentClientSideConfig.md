@@ -34,7 +34,7 @@ Login to OPNsense using an administrator user, from the left side bar choose **F
 
 You can specify rule source host or subnet by click **Advanced** button in Source field and fill the desired source host or subnet.
 
-![](/home/me/w/e/mvp-icap-squid-cache-proxy/docs/assets/opnsense-portforward-rule-3.png)
+![](assets/opnsense-portforward-rule-3.png)
 
 Specify **Interface** as the internet facing network interface, **TCP/IP version** as IPv4, and **Protocol** as TCP
 
@@ -42,15 +42,15 @@ You can choose any destination network to apply the rule on, I enabled **Destina
 
 Set destination port range From and To as **HTTP**,  and set Redirect traget IP and Port to match the Proxy address and HTTP transparent port. and click save
 
-![](/home/me/w/e/mvp-icap-squid-cache-proxy/docs/assets/opnsense-portforward-rule.png)
+![](assets/opnsense-portforward-rule.png)
 
 Create a new rule with the same configuration (or use **Clone** button in rules list page) and change destination port range From and To to **HTTPS**, and set Redirect traget IP and Port to match the Proxy address and HTTPS transparent port, and click save
 
-![](/home/me/w/e/mvp-icap-squid-cache-proxy/docs/assets/opnsense-portforward-rule-2.png)
+![](assets/opnsense-portforward-rule-2.png)
 
 You should be able to see a similar rule list, to finalize, click **Apply changes button**
 
-![](/home/me/w/e/mvp-icap-squid-cache-proxy/docs/assets/opnsense-portforward-rules.png)
+![](assets/opnsense-portforward-rules.png)
 
 ### Certificate authority file preparation
 
