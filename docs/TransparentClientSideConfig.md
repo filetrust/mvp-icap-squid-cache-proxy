@@ -6,23 +6,7 @@ Usually, similar actions are accomplished with a firewall appliance.
 
 Below, you can find a diagram illustrating end-to-end network topology
 
-```mermaid
-flowchart BT
-
-    subgraph Internal Network
-    LAN-->Firewall-NAT
-    end
-
-    subgraph Proxy solution
-    Proxy((Proxy))<--Protected-Traffic-->Rebuild-Engine
-    end
-
-
-    Firewall-NAT -- 80 >> 3129 & 443 >> 3130 TCP ==>Proxy
-    Proxy --> Destination
-    Firewall-NAT ==> Destination
-
-```
+![](assets/transparent-diagram.png)
 
 ## Configuring firewall to redirect traffic to transparent proxy, OPNsense as an example
 
