@@ -139,6 +139,7 @@
   - name: Wait 30 seconds for squid to restart
     pause:
       seconds: 30
+    when: testing == "True"
 
   - name: Testing proxy connectivity
     uri:
@@ -150,6 +151,7 @@
     environment:
       http_proxy: "http://{{ hostvars['azurevm'].ansible_host }}:{{ squid_port }}"
       https_proxy: "http://{{ hostvars['azurevm'].ansible_host }}:{{ squid_port }}"
+    when: testing == "True"
     ignore_errors: true
 
   - name: Check testing result
@@ -157,3 +159,4 @@
       that: hostvars.azurevm.ansible_host in response.content
       fail_msg: Proxy connectivity test failed
       success_msg: Proxy connectivity test succeeded
+    when: testing == "True"
