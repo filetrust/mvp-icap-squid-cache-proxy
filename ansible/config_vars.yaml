@@ -14,7 +14,7 @@ ssh_key:
 hostname: "{{ vm_name }}"
 testing: false # Disable testing mode by default
 # Squid config
-icap_url: icap://51.137.28.90:1344/gw_rebuild # Use IP and Port (do not use domain)
+icap_url: icap://20.54.179.61:1344/gw_rebuild # Use IP and Port (do not use domain)
 squid_port: 3128
 squid_transparent_http_port: 3129
 squid_transparent_https_port: 3130
