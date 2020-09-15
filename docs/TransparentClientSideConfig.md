@@ -1,3 +1,5 @@
+# Documentation below isn't ready to use, do not use it unless for testing
+_____
 # Transparent proxy client side configuration
 
 After deploying the proxy server using ansible playbook, you should see the Cloud VM IP address in playbook output, use it to redirect traffic with . To route a network HTTP and HTTPS traffic through proxy, without having to configure proxy on clients devices you must redirect traffic with destination port `80/tcp` to the proxy transparent http port sepcified in `config_vars.yaml`  as `squid_transparent_http_port`  which is `3129/tcp` by default , and traffic with destination port `443/tcp` to to the proxy transparent https port sepcified in `config_vars.yaml` as `squid_transparent_https_port` wich is `3130/tcp by default` .
